@@ -5,3 +5,114 @@
 # Succynct      |	Author  :   Alex Fontaine-Bolanos	#
 #														#
 #########################################################
+
+# Syncing configuration
+config(){
+    while true; do
+        read -p "Source file/folder: " src
+        if ( test ! -e $src ) || [ -z "$src" ]; then 			#If file/folder does not exist or empty(0)
+            read -p $"File or Directory does not exit. Press ENTER to try again"
+        else
+            break
+        fi
+    done
+
+    while true; do 								#If file/folder does not exist or empty(0)
+        read -p "Destination folder: " dest
+        if ( test ! -d $dest ) || [ -z "$dest" ]; then 			#If file/folder does not exist or empty(0)
+            read -p $"Destination Directory does not exist. Press ENTER to try again."
+        else
+            break
+        fi
+    done
+
+    while true ;do
+        read -p "How do you want the source be synced?
+
+            (i)	Intervals
+            (d)	Daily
+            (w)	Weekly
+            (m)	Monthly	(Not implemented)
+            (y)	Yearly	(Not Implemented)
+
+            Select one: " s				# s = select
+
+        case $s in
+            i)	read -p "Choose an interval (min): " t
+                break
+                ;;
+            d)	read -p "Choose time of day (24) (HH): " t
+                break
+                ;;
+            w)	read -p "Starting date (YYYYMMDD) (DD recommended max at 28): " d
+                read -p "Choose time of day (24) (HH): " t
+                break
+                ;;
+            m)	read -p "Starting date (YYYYMMDD) (DD recommended max at 28): " d
+                read -p "Choose time (24) (HH): " t
+                break
+                ;;
+            y)	read -p "Starting date (YYYYMMDD): " d
+                read -p "Choose time (24) (HH): " t
+                break
+                ;;
+            *)	"Invalid input."
+                ;;
+        esac
+    done
+
+    echo "# Source" > succynct-data
+    echo "# Destination" >> succynct-data
+    echo "# Selection" >> succynct-data
+    echo "# Intervals" >> succynct-data
+    echo "# Date" >> succynct-data
+
+    line=$(sed -n "/Source/=" succynct-data)
+    sed -i "$line a$src" succynct-data
+
+    line=$(sed -n "/Destination/=" succynct-data)
+    sed -i "$line a$dest" succynct-data
+
+    case $s in
+        i)	t=$(($t*60))
+            line=$(sed -n "/Selection/=" succynct-data)
+            sed -i "$line a$s" succynct-data
+            line=$(sed -n "/Intervals/=" succynct-data)
+            sed -i "$line a$t" succynct-data
+            ;;
+        d)	d=$(date -d "today $t" +%s)
+            line=$(sed -n "/Selection/=" succynct-data)
+            sed -i "$line a$s" succynct-data
+            line=$(sed -n "/Intervals/=" succynct-data)
+            sed -i "$line a$t" succynct-data
+            line=$(sed -n "/Date/=" succynct-data)
+            sed -i "$line a$d" succynct-data
+            ;;
+        w)	d=$(date -d $d +%s)
+            line=$(sed -n "/Selection/=" succynct-data)
+            sed -i "$line a$s" succynct-data
+            line=$(sed -n "/Intervals/=" succynct-data)
+            sed -i "$line a$t" succynct-data
+            line=$(sed -n "/Date/=" succynct-data)
+            sed -i "$line a$d" succynct-data
+            ;;
+        m)	d=$(date -d $d +%s)
+            line=$(sed -n "/Selection/=" succynct-data)
+            sed -i "$line a$s" succynct-data
+            line=$(sed -n "/Intervals/=" succynct-data)
+            sed -i "$line a$t" succynct-data
+            line=$(sed -n "/Date/=" succynct-data)
+            sed -i "$line a$d" succynct-data
+            ;;
+        y)	d=$(date -d $d +%s)
+            line=$(sed -n "/Selection/=" succynct-data)
+            sed -i "$line a$s" succynct-data
+            line=$(sed -n "/Intervals/=" succynct-data)
+            sed -i "$line a$t" succynct-data
+            line=$(sed -n "/Date/=" succynct-data)
+            sed -i "$line a$d" succynct-data
+            ;;
+    esac
+    # mv succynct-data ~/.local/share/succynct/
+    # mv succynct-data <path to app startup at login>
+}
