@@ -5,6 +5,17 @@
 # Succynct      |	Author  :   Alex Fontaine-Bolanos	#
 #														#
 #########################################################
+#TODO:
+#  configExist: check if succynct-data exist
+#  Check if an option was added
+#  Add run and its contents
+configtExist(){
+    if ( succynct-data exist );then
+        run
+    else
+        config
+    fi
+}
 
 # Syncing configuration
 config(){
@@ -115,4 +126,12 @@ config(){
     esac
     # mv succynct-data ~/.local/share/succynct/
     # mv succynct-data <path to app startup at login>
+
+    run
 }
+
+if ( $1 -eq "-m" );then
+    config
+else
+    configExist
+fi
