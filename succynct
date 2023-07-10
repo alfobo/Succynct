@@ -20,16 +20,16 @@ configExist(){
 
 # Gathers the config data from succynct-data. Then executes the interval time. When the time is up, it compares the destination file/folder to that of the source. Then makes a copy.
 run(){
-    srcLine=$(($(sed -n "/Source/=" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)+1))
-    destLine=$(($(sed -n "/Destination/=" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)+1))
-    selectLine=$(($(sed -n "/Selection/=" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)+1))
-    iLine=$(($(sed -n "/Intervals/=" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)+1))
-    dateLine=$(($(sed -n "/Date/=" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)+1))
-    src=$(sed -n "$srcLine p" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)
-    dest=$(sed -n "$destLine p" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)
-    s=$(sed -n "$selectLine p" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)
-    i=$(sed -n "$iLine p" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)
-    d=$(sed -n "$dateLine p" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)
+    srcLine=$(($(sed -n "/Source/=" succynct-data)+1))
+    destLine=$(($(sed -n "/Destination/=" succynct-data)+1))
+    selectLine=$(($(sed -n "/Selection/=" succynct-data)+1))
+    iLine=$(($(sed -n "/Intervals/=" succynct-data)+1))
+    dateLine=$(($(sed -n "/Date/=" succynct-data)+1))
+    src=$(sed -n "$srcLine p" succynct-data)
+    dest=$(sed -n "$destLine p" succynct-data)
+    s=$(sed -n "$selectLine p" succynct-data)
+    i=$(sed -n "$iLine p" succynct-data)
+    d=$(sed -n "$dateLine p" succynct-data)
     ti=$(($(date -d @$d +%s)-$(date +%s)))	# ti = Time interval.
 
     mtime(){
@@ -73,7 +73,7 @@ run(){
             d)	if [ $(date +%s) -ge $d ];then
                     fileSync
                     newDate=$(($(date -d "today $i" +%s)+(24*60*60))) # New date = +24h
-                    sed -i "s/$d/$newDate/" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data
+                    sed -i "s/$d/$newDate/" succynct-data
                     d=$newDate
                     echo "Synched at $(date)"
                     echo "Next synchronisation at $(date -d @$d)"
@@ -84,7 +84,7 @@ run(){
             w)	if [ $(date +%s) -ge $d ];then
                     fileSync
                     newDate=$(($(date -d "today $i" +%s)+(7*24*60*60))) # New date = +7 days
-                    sed -i "s/$d/$newDate/" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data
+                    sed -i "s/$d/$newDate/" succynct-data
                     d=$newDate
                     echo "Synched at $(date)"
                     echo "Next synchronisation at $(date -d @$d)"
@@ -95,7 +95,7 @@ run(){
             m)	if [ $(date +%s) -ge $d ];then
                     fileSync
                     newDate=$(date -d +month +%s) # New date = +1 month
-                    sed -i "s/$d/$newDate/" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data
+                    sed -i "s/$d/$newDate/" succynct-data
                     d=$newDate
                     echo "Synched at $(date)"
                     echo "Next synchronisation at $(date -d @$d)"
@@ -106,7 +106,7 @@ run(){
             y)	if [ $(date +%s) -ge $d ];then
                     fileSync
                     newDate=$(date -d +year +%s) # New date = +1 month
-                    sed -i "s/$d/$newDate/" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data
+                    sed -i "s/$d/$newDate/" succynct-data
                     d=$newDate
                     echo "Synched at $(date)"
                     echo "Next synchronisation at $(date -d @$d)"
