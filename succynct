@@ -230,7 +230,7 @@ config(){
     run
 }
 
-if ( $1 -eq "-m" );then
+if [ $1 == "-m" ];then
     config
 else
     configExist
