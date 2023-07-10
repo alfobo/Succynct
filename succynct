@@ -9,8 +9,9 @@
 #   configExist: check if succynct-data exist
 #   Check if an option was added
 # x Add run and its contents
-configtExist(){
-    if ( succynct-data exist );then
+
+configExist(){
+    if ( test succynct-data );then
         run
     else
         config
@@ -230,7 +231,7 @@ config(){
     run
 }
 
-if [ $1 == "-m" ];then
+if [[ $1 = "-m" ]];then
     config
 else
     configExist
