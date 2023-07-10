@@ -11,7 +11,7 @@
 # x Add run and its contents
 
 configExist(){
-    if ( test succynct-data );then
+    if ( test -e succynct-data );then
         run
     else
         config
@@ -19,7 +19,7 @@ configExist(){
 }
 
 # Gathers the config data from succynct-data. Then executes the interval time. When the time is up, it compares the destination file/folder to that of the source. Then makes a copy.
-runc(){
+run(){
     srcLine=$(($(sed -n "/Source/=" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)+1))
     destLine=$(($(sed -n "/Destination/=" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)+1))
     selectLine=$(($(sed -n "/Selection/=" /home/afb/Software/bash/bashkup/succynct-v0.6/succynct-data)+1))
