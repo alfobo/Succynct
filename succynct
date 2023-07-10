@@ -1,14 +1,16 @@
 #!/bin/bash
 
-#########################################################
-#														#
-# Succynct      |	Author  :   Alex Fontaine-Bolanos	#
-#														#
-#########################################################
+#####################################################
+#													#
+# Succynct  |	Author  :   Alex Fontaine-Bolanos	#
+#           |   Created :   17/8/2022               #
+#													#
+#####################################################
 #TODO:
-#   configExist: check if succynct-data exist
-#   Check if an option was added
+# x configExist: check if succynct-data exist
+# x Check if an option was added
 # x Add run and its contents
+#   Add multiple source file
 
 configExist(){
     if ( test -e succynct-data );then
@@ -64,11 +66,19 @@ run(){
     echo "Destination: $dest"
     echo "Selection: $s"
     echo "Interval: $i"
-    echo "Synchronisation at: $(date -d @$d)"
+    if [[ $s = "i" ]];then
+        echo "Synchronisation at: $(date -d "+$i sec")"
+    else
+        echo "Synchronisation at: $(date -d @$d)"
+    fi
 
+    # Checks if synchronisation time has passed
     while true; do
         case $s in
-            i)	sleep $i
+            i)  fileSync
+                echo "Synched at $(date)"
+                echo "Next synchronisation at $(date -d "+$i sec")"
+                sleep $i
                 ;;
             d)	if [ $(date +%s) -ge $d ];then
                     fileSync
