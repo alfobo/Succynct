@@ -7,36 +7,35 @@
 #													#
 #####################################################
 #TODO:
-# x configExist: check if ~/.local/share/succynct/succynct-config exist
+# x configExist: check if succynct-config exist
 # x Check if an option was added
 # x Add run and its contents
 #   Add multiple source file
 #   Make succynct directory in ~/.local/share/ and move the script there
 #   Make .desktop at /home/afb/.config/autostart/
-# x Change succynct-data to succynct-config to reduce confusion
+# x  Change succynct-data to succynct-config to reduce confusion
 
-# Checks to see if ~/.local/share/succynct/succynct-config exist
+# Checks to see if succynct-config exist
 configExist(){
     if ( test -e ~/.local/share/succynct/succynct-config );then
         run
     else
-        mkdir ~/.local/share/succynct/
         config
     fi
 }
 
-# Gathers the config data from ~/.local/share/succynct/succynct-config. Then executes the interval time. When the time is up, it compares the destination file/folder to that of the source. Then makes a copy.
+# Gathers the config data from succynct-config. Then executes the interval time. When the time is up, it compares the destination file/folder to that of the source. Then makes a copy.
 run(){
-    srcLine=$(($(sed -n "/Source/=" ~/.local/share/succynct/succynct-config)+1))
-    destLine=$(($(sed -n "/Destination/=" ~/.local/share/succynct/succynct-config)+1))
-    selectLine=$(($(sed -n "/Selection/=" ~/.local/share/succynct/succynct-config)+1))
-    iLine=$(($(sed -n "/Intervals/=" ~/.local/share/succynct/succynct-config)+1))
-    dateLine=$(($(sed -n "/Date/=" ~/.local/share/succynct/succynct-config)+1))
-    src=$(sed -n "$srcLine p" ~/.local/share/succynct/succynct-config)
-    dest=$(sed -n "$destLine p" ~/.local/share/succynct/succynct-config)
-    s=$(sed -n "$selectLine p" ~/.local/share/succynct/succynct-config)
-    i=$(sed -n "$iLine p" ~/.local/share/succynct/succynct-config)
-    d=$(sed -n "$dateLine p" ~/.local/share/succynct/succynct-config)
+    srcLine=$(($(sed -n "/Source/=" succynct-config)+1))
+    destLine=$(($(sed -n "/Destination/=" succynct-config)+1))
+    selectLine=$(($(sed -n "/Selection/=" succynct-config)+1))
+    iLine=$(($(sed -n "/Intervals/=" succynct-config)+1))
+    dateLine=$(($(sed -n "/Date/=" succynct-config)+1))
+    src=$(sed -n "$srcLine p" succynct-config)
+    dest=$(sed -n "$destLine p" succynct-config)
+    s=$(sed -n "$selectLine p" succynct-config)
+    i=$(sed -n "$iLine p" succynct-config)
+    d=$(sed -n "$dateLine p" succynct-config)
     ti=$(($(date -d @$d +%s)-$(date +%s)))	# ti = Time interval.
 
     mtime(){
@@ -88,7 +87,7 @@ run(){
             d)	if [ $(date +%s) -ge $d ];then
                     fileSync
                     newDate=$(($(date -d "today $i" +%s)+(24*60*60))) # New date = +24h
-                    sed -i "s/$d/$newDate/" ~/.local/share/succynct/succynct-config
+                    sed -i "s/$d/$newDate/" succynct-config
                     d=$newDate
                     echo "Synched at $(date)"
                     echo "Next synchronisation at $(date -d @$d)"
@@ -99,7 +98,7 @@ run(){
             w)	if [ $(date +%s) -ge $d ];then
                     fileSync
                     newDate=$(($(date -d "today $i" +%s)+(7*24*60*60))) # New date = +7 days
-                    sed -i "s/$d/$newDate/" ~/.local/share/succynct/succynct-config
+                    sed -i "s/$d/$newDate/" succynct-config
                     d=$newDate
                     echo "Synched at $(date)"
                     echo "Next synchronisation at $(date -d @$d)"
@@ -110,7 +109,7 @@ run(){
             m)	if [ $(date +%s) -ge $d ];then
                     fileSync
                     newDate=$(date -d +month +%s) # New date = +1 month
-                    sed -i "s/$d/$newDate/" ~/.local/share/succynct/succynct-config
+                    sed -i "s/$d/$newDate/" succynct-config
                     d=$newDate
                     echo "Synched at $(date)"
                     echo "Next synchronisation at $(date -d @$d)"
@@ -121,7 +120,7 @@ run(){
             y)	if [ $(date +%s) -ge $d ];then
                     fileSync
                     newDate=$(date -d +year +%s) # New date = +1 month
-                    sed -i "s/$d/$newDate/" ~/.local/share/succynct/succynct-config
+                    sed -i "s/$d/$newDate/" succynct-config
                     d=$newDate
                     echo "Synched at $(date)"
                     echo "Next synchronisation at $(date -d @$d)"
@@ -188,60 +187,62 @@ config(){
         esac
     done
 
-    echo "# Source" > ~/.local/share/succynct/succynct-config
-    echo "# Destination" >> ~/.local/share/succynct/succynct-config
-    echo "# Selection" >> ~/.local/share/succynct/succynct-config
-    echo "# Intervals" >> ~/.local/share/succynct/succynct-config
-    echo "# Date" >> ~/.local/share/succynct/succynct-config
+    echo "# Source" > succynct-config
+    echo "# Destination" >> succynct-config
+    echo "# Selection" >> succynct-config
+    echo "# Intervals" >> succynct-config
+    echo "# Date" >> succynct-config
 
-    line=$(sed -n "/Source/=" ~/.local/share/succynct/succynct-config)
-    sed -i "$line a$src" ~/.local/share/succynct/succynct-config
+    line=$(sed -n "/Source/=" succynct-config)
+    sed -i "$line a$src" succynct-config
 
-    line=$(sed -n "/Destination/=" ~/.local/share/succynct/succynct-config)
-    sed -i "$line a$dest" ~/.local/share/succynct/succynct-config
+    line=$(sed -n "/Destination/=" succynct-config)
+    sed -i "$line a$dest" succynct-config
 
     case $s in
         i)	t=$(($t*60))
-            line=$(sed -n "/Selection/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$s" ~/.local/share/succynct/succynct-config
-            line=$(sed -n "/Intervals/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$t" ~/.local/share/succynct/succynct-config
+            line=$(sed -n "/Selection/=" succynct-config)
+            sed -i "$line a$s" succynct-config
+            line=$(sed -n "/Intervals/=" succynct-config)
+            sed -i "$line a$t" succynct-config
             ;;
         d)	d=$(date -d "today $t" +%s)
-            line=$(sed -n "/Selection/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$s" ~/.local/share/succynct/succynct-config
-            line=$(sed -n "/Intervals/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$t" ~/.local/share/succynct/succynct-config
-            line=$(sed -n "/Date/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$d" ~/.local/share/succynct/succynct-config
+            line=$(sed -n "/Selection/=" succynct-config)
+            sed -i "$line a$s" succynct-config
+            line=$(sed -n "/Intervals/=" succynct-config)
+            sed -i "$line a$t" succynct-config
+            line=$(sed -n "/Date/=" succynct-config)
+            sed -i "$line a$d" succynct-config
             ;;
         w)	d=$(date -d $d +%s)
-            line=$(sed -n "/Selection/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$s" ~/.local/share/succynct/succynct-config
-            line=$(sed -n "/Intervals/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$t" ~/.local/share/succynct/succynct-config
-            line=$(sed -n "/Date/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$d" ~/.local/share/succynct/succynct-config
+            line=$(sed -n "/Selection/=" succynct-config)
+            sed -i "$line a$s" succynct-config
+            line=$(sed -n "/Intervals/=" succynct-config)
+            sed -i "$line a$t" succynct-config
+            line=$(sed -n "/Date/=" succynct-config)
+            sed -i "$line a$d" succynct-config
             ;;
         m)	d=$(date -d $d +%s)
-            line=$(sed -n "/Selection/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$s" ~/.local/share/succynct/succynct-config
-            line=$(sed -n "/Intervals/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$t" ~/.local/share/succynct/succynct-config
-            line=$(sed -n "/Date/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$d" ~/.local/share/succynct/succynct-config
+            line=$(sed -n "/Selection/=" succynct-config)
+            sed -i "$line a$s" succynct-config
+            line=$(sed -n "/Intervals/=" succynct-config)
+            sed -i "$line a$t" succynct-config
+            line=$(sed -n "/Date/=" succynct-config)
+            sed -i "$line a$d" succynct-config
             ;;
         y)	d=$(date -d $d +%s)
-            line=$(sed -n "/Selection/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$s" ~/.local/share/succynct/succynct-config
-            line=$(sed -n "/Intervals/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$t" ~/.local/share/succynct/succynct-config
-            line=$(sed -n "/Date/=" ~/.local/share/succynct/succynct-config)
-            sed -i "$line a$d" ~/.local/share/succynct/succynct-config
+            line=$(sed -n "/Selection/=" succynct-config)
+            sed -i "$line a$s" succynct-config
+            line=$(sed -n "/Intervals/=" succynct-config)
+            sed -i "$line a$t" succynct-config
+            line=$(sed -n "/Date/=" succynct-config)
+            sed -i "$line a$d" succynct-config
             ;;
     esac
-    # mv ~/.local/share/succynct/succynct-config ~/.local/share/succynct/
-    # mv ~/.local/share/succynct/succynct-config <path to app startup at login>
+
+    mkdir ~/.local/share/succynct
+    # mv succynct-config ~/.local/share/succynct/
+    # mv succynct-config <path to app startup at login>
 
     run
 }
