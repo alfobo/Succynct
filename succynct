@@ -240,9 +240,12 @@ config(){
             ;;
     esac
 
-    mkdir ~/.local/share/succynct
-    # mv succynct-config ~/.local/share/succynct/
-    # mv succynct-config <path to app startup at login>
+    if ( test ! -e ~/.local/share/succynct ); then
+        mkdir ~/.local/share/succynct
+        mv succynct-config ~/.local/share/succynct/
+        # touch <path to app startup at login and its contents>
+        # mv succynct ~/.local/share/succynct/
+    fi
 
     run
 }
