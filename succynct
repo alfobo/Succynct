@@ -11,9 +11,9 @@
 # x Check if an option was added
 # x Add run and its contents
 #   Add multiple source file
-#   Make succynct directory in ~/.local/share/ and move the script there
+# x Make succynct directory in ~/.local/share/ and move the script there
 #   Make .desktop at /home/afb/.config/autostart/
-# x  Change succynct-data to succynct-config to reduce confusion
+# x Change succynct-data to succynct-config to reduce confusion
 
 # Checks to see if succynct-config exist
 configExist(){
@@ -243,8 +243,13 @@ config(){
     if ( test ! -e ~/.local/share/succynct ); then
         mkdir ~/.local/share/succynct
         mv succynct-config ~/.local/share/succynct/
-        # touch <path to app startup at login and its contents>
-        # mv succynct ~/.local/share/succynct/
+        echo "[Desktop Entry]
+        Type=Application
+        Name=succynct
+        Exec=~/.local/share/succynct/succynct
+        Icon=utilities-terminal
+        " >> ~/.config/autostart/succynct.desktop
+        mv succynct ~/.local/share/succynct/
     fi
 
     run
