@@ -16,8 +16,31 @@ configExist(){
     fi
 }
 
+# Creates directory if none exist and then moves the script and the config file to it. Lastly changes directory so that it can properly continue its process
+changeDir(){
+    if ( test ! -e ~/.local/share/succynct/succynct-config ||
+        test ! -e ~/.local/share/succynct/succynct ); then
+        mkdir ~/.local/share/succynct
+        mv succynct-config ~/.local/share/succynct/
+        echo "[Desktop Entry]
+        Type=Application
+        Name=succynct
+        Exec=~/.local/share/succynct/succynct
+        Icon=utilities-terminal
+        " >> ~/.config/autostart/succynct.desktop
+        mv succynct ~/.local/share/succynct/
+        cd ~/.local/share/succynct/
+        chmod u+x succynct
+    else
+        cd ~/.local/share/succynct/
+    fi
+}
+
 # Gathers the config data from succynct-config. Then executes the interval time. When the time is up, it compares the destination file/folder to that of the source. Then makes a copy.
 run(){
+
+    changeDir
+
     srcLine=$(($(sed -n "/Source/=" succynct-config)+1))
     destLine=$(($(sed -n "/Destination/=" succynct-config)+1))
     selectLine=$(($(sed -n "/Selection/=" succynct-config)+1))
@@ -46,15 +69,30 @@ run(){
             destf=$dest/$(basename $src)
             bmtime=$(mtime $destf)
         fi
+
+        #TODO: Test following if statement
         #Restores source file/folder if missing
         if ( test ! -e $src );then
-            cp -a $destf $(dirname $src)
-            chmod u+w $src
+            while true; do
+                read -p "Source file missing. Do you want to restore it? (y/n)" x
+                if [[ $x = "y" || $x = "Y" ]]; then
+                    cp -a $destf $(dirname $src)
+                    chmod u+w $src
+                    echo "Restored"
+                    break
+                elif [[ $x = "n" || $x = "N" ]]; then
+                    echo "Synchronisation will now stop"
+                    exit
+                else
+                    echo "Invalid input. Please try again"
+                fi
+            done
         fi
-        #Checks modified time differences, then copy if there is any.
+        #Checks modified time differences, then copy to destination if there is any.
         if [ $smtime -gt $bmtime ];then
+            chmod u+w $destf
             cp -a $src $dest
-            chmod a-w $destf
+            chmod u-w $destf
         fi
     }
 
@@ -232,18 +270,7 @@ config(){
             ;;
     esac
 
-    if ( test ! -e ~/.local/share/succynct ); then
-        mkdir ~/.local/share/succynct
-        mv succynct-config ~/.local/share/succynct/
-        echo "[Desktop Entry]
-        Type=Application
-        Name=succynct
-        Exec=~/.local/share/succynct/succynct
-        Icon=utilities-terminal
-        " >> ~/.config/autostart/succynct.desktop
-        mv succynct ~/.local/share/succynct/
-    fi
-
+    changeDir
     run
 }
 
