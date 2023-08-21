@@ -70,7 +70,6 @@ run(){
             bmtime=$(mtime $destf)
         fi
 
-        #TODO: Test following if statement
         #Restores source file/folder if missing
         if ( test ! -e $src );then
             while true; do
